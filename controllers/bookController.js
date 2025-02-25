@@ -10,7 +10,8 @@ exports.getBooks = async (req,res) => {
         }
         res.status(200).json(book);
         };
-    res.status(200).json(Books);
+        const allBooks = await Books.find();
+        res.status(200).json(allBooks);
     }catch(err){
         res.status(500).json("Server Error");
     }   
@@ -19,13 +20,15 @@ exports.getBooks = async (req,res) => {
 exports.addBooks = async (req,res) => {
     try{
         const {title, author, genre, publishedYear, availableCopies } = req.body;
-
-    const newBook = new Books({
-        title,
-        author,
-        genre,
-        publishedYear,
-        availableCopies
+        if (!title || !author || !genre || !availableCopies){
+            res.status(400).json("Field is required");
+        }
+        const newBook = new Books({
+            title,
+            author,
+            genre,
+            publishedYear,
+            availableCopies
     });
     await newBook.save();
     res.status(200).json(newBook);
